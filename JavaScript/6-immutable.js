@@ -7,14 +7,14 @@ const withUser = (base, user) => createContext(base, { user });
 const withRequest = (base, requestId) => createContext(base, { requestId });
 
 const getBalance = (context, accountId) => {
-  const { console, rbac, user, requestId } = context;
+  const { console, accessPolicy, user, requestId } = context;
   if (!user) {
     console.error('No user in context');
     return null;
   }
   console.log(`Request ID: ${requestId}`);
   console.log(`User ${user.name} requesting balance for account ${accountId}`);
-  if (!rbac.check(user.role, 'read:balance')) {
+  if (!accessPolicy.check(user.role, 'read:balance')) {
     console.error(`Access denied for ${user.name}`);
     return null;
   }
@@ -23,16 +23,17 @@ const getBalance = (context, accountId) => {
 
 // Usage
 
-const rbac = {
+const accessPolicy = {
   permissions: {
     admin: ['read:balance'],
     user: ['read:balance'],
     guest: [],
   },
-  check: (role, permission) => rbac.permissions[role]?.includes(permission),
+  check: (role, permission) =>
+    accessPolicy.permissions[role]?.includes(permission),
 };
 
-const context1 = createContext({ console, rbac });
+const context1 = createContext({ console, accessPolicy });
 console.log('Context 1:', getBalance(context1, 'ACC-002'), '\n');
 
 const context2 = withUser(context1, { name: 'Marcus', role: 'admin' });

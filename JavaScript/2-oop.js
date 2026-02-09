@@ -6,9 +6,9 @@ class AccountService {
   }
 
   getBalance(accountId) {
-    const { console, rbac, user } = this.context;
+    const { console, accessPolicy, user } = this.context;
     console.log(`User ${user.name} requesting balance for ${accountId}`);
-    if (!rbac.check(user.role, 'read:balance')) {
+    if (!accessPolicy.check(user.role, 'read:balance')) {
       console.error('Access denied: insufficient permissions');
       return null;
     }
@@ -20,7 +20,7 @@ class AccountService {
 
 // Usage
 
-class RBAC {
+class AccessPolicy {
   constructor() {
     this.permissions = {
       admin: ['read:balance', 'read:transactions', 'write:transactions'],
@@ -41,10 +41,10 @@ class User {
   }
 }
 
-const rbac = new RBAC();
+const accessPolicy = new AccessPolicy();
 const user = new User('Marcus', 'admin');
-const context = { console, rbac, user };
+const context = { console, accessPolicy, user };
 
 const accountService = new AccountService(context);
 const balance = accountService.getBalance('Account-123');
-console.log(`Access granted: balance = $${balance}`);
+console.log(`Balance = $${balance}`);

@@ -6,9 +6,9 @@ const asyncLocalStorage = new AsyncLocalStorage();
 const getBalance = async (accountId) => {
   const context = asyncLocalStorage.getStore();
   if (!context) throw new Error('No context');
-  const { console, rbac, user, requestId } = context;
+  const { console, accessPolicy, user, requestId } = context;
   console.log(`[${requestId}] User ${user.name} balance for ${accountId}`);
-  if (!rbac.check(user.role, 'read:balance')) {
+  if (!accessPolicy.check(user.role, 'read:balance')) {
     console.error(`[${requestId}] Access denied for ${user.name}`);
     return null;
   }
@@ -18,18 +18,19 @@ const getBalance = async (accountId) => {
 
 // Usage
 
-const rbac = {
+const accessPolicy = {
   permissions: {
     admin: ['read:balance'],
     user: ['read:balance'],
     guest: [],
   },
-  check: (role, permission) => rbac.permissions[role]?.includes(permission),
+  check: (role, permission) =>
+    accessPolicy.permissions[role]?.includes(permission),
 };
 
 const context = {
   console,
-  rbac,
+  accessPolicy,
   user: { name: 'Marcus', role: 'admin' },
   requestId: 'req-001',
 };

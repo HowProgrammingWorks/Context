@@ -5,9 +5,9 @@ Context used to provide an efficient way of sharing data between different compo
 ## Examples index
 
 - [1-closure.js](JavaScript/1-closure.js) — Context with closure
-  - Partially applied function with bound context; simple RBAC and user auth
+  - Partially applied function with bound context; simple AccessPolicy and user auth
 - [2-oop.js](JavaScript/2-oop.js) — Context in OOP
-  - Context passed to constructor; RBAC, User, and AccountService as classes
+  - Context passed to constructor; AccessPolicy, User, and AccountService as classes
 - [3-factory.js](JavaScript/3-factory.js) — Context factory
   - Factory creates services with shared context; dependency injection
 - [4-pipeline.js](JavaScript/4-pipeline.js) — Context in middleware pipeline

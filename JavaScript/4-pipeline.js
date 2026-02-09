@@ -35,19 +35,22 @@ const auth = (context) => {
   return Promise.resolve({ ...context, user });
 };
 
-const rbac = (context) => {
+const accessPolicy = (context) => {
   const permissions = {
     admin: ['read:balance', 'read:transactions'],
     user: ['read:balance'],
     guest: [],
   };
   const check = (role, permission) => permissions[role]?.includes(permission);
-  return Promise.resolve({ ...context, rbac: { check, permissions } });
+  return Promise.resolve({
+    ...context,
+    accessPolicy: { check, permissions },
+  });
 };
 
 const getBalance = (context) => {
-  const { console, rbac, user, requestId } = context;
-  if (!rbac.check(user.role, 'read:balance')) {
+  const { console, accessPolicy, user, requestId } = context;
+  if (!accessPolicy.check(user.role, 'read:balance')) {
     console.error(`[${requestId}] Access denied for ${user.name}`);
     return Promise.resolve({ ...context, status: 403, body: null });
   }
@@ -58,7 +61,7 @@ const getBalance = (context) => {
 
 // Usage
 
-const execute = pipeline(tracing, auth, rbac, getBalance);
+const execute = pipeline(tracing, auth, accessPolicy, getBalance);
 
 const context = {
   console,
