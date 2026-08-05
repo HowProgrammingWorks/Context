@@ -1,6 +1,7 @@
 'use strict';
 
-const createContext = (base, data = {}) => Object.freeze({ ...base, ...data });
+const createContext = (base, data = {}) =>
+  Object.freeze({ ...base, ...data });
 
 const withUser = (base, user) => createContext(base, { user });
 
@@ -39,5 +40,5 @@ console.log('Context 1:', getBalance(context1, 'ACC-002'), '\n');
 const context2 = withUser(context1, { name: 'Marcus', role: 'admin' });
 console.log('Context 2:', getBalance(context2, 'ACC-002'), '\n');
 
-const context3 = withRequest(context2, 'req-' + Date.now());
+const context3 = withRequest(context2, `req-${Date.now()}`);
 console.log('Context 3:', getBalance(context3, 'ACC-002'), '\n');

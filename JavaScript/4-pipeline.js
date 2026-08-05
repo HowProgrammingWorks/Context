@@ -9,13 +9,12 @@ const appendTrace = (context, step) => {
   return [...trace, step];
 };
 
-const pipeline =
-  (...steps) =>
-  (context) => {
-    const initial = Promise.resolve(context);
-    const next = (chain, mw) => chain.then((ctx) => mw(ctx));
-    return steps.reduce(next, initial);
-  };
+const pipeline = (...steps) => (context) => {
+  const initial = Promise.resolve(context);
+  const next = (chain, middleware) =>
+    chain.then((ctx) => middleware(ctx));
+  return steps.reduce(next, initial);
+};
 
 const tracing = (context) => {
   const { console } = context;
